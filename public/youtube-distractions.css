@@ -1,0 +1,66 @@
+html.focus-hide-youtube-distractions :is(
+  ytd-browse[page-subtype="home"],
+  ytd-watch-flexy #secondary,
+  #related,
+  .ytp-ce-element,
+  .ytp-endscreen-content,
+  .ytp-fullscreen-grid,
+  ytd-guide-section-renderer:has(ytd-guide-entry-renderer a[href="/"]),
+  ytd-guide-entry-renderer:has(a[href*="/shorts"]),
+  ytd-guide-entry-renderer:has(.ytd-guide-entry-renderer[title="Shorts"]),
+  ytd-mini-guide-entry-renderer:has(a[href*="/shorts"]),
+  ytd-mini-guide-entry-renderer:has(a[href="/"]),
+  ytd-mini-guide-entry-renderer:has(.ytd-mini-guide-entry-renderer[title="Shorts"]),
+  ytd-mini-guide-entry-renderer[aria-label="Shorts"],
+  ytd-guide-section-renderer:has(a[href*="/feed/storefront"]),
+  ytd-guide-section-renderer:has(a[href*="music.youtube.com"]),
+  ytd-guide-section-renderer:has(a[href*="youtubekids.com"]),
+  ytd-guide-section-renderer:has(a[href*="/premium"]),
+  ytd-guide-section-renderer:has(a[href*="/reporthistory"]),
+  ytd-guide-renderer > #footer,
+  ytd-rich-section-renderer:has(ytd-rich-shelf-renderer[is-shorts]),
+  ytd-rich-shelf-renderer[is-shorts],
+  ytd-reel-shelf-renderer,
+  grid-shelf-view-model:has(a[href*="/shorts"]),
+  ytd-video-renderer:has(a[href*="/shorts"]),
+  ytd-grid-video-renderer:has(a[href*="/shorts"]),
+  ytd-rich-item-renderer:has(a[href*="/shorts"]),
+  ytd-compact-video-renderer:has(a[href*="/shorts"]),
+  yt-lockup-view-model:has(a[href*="/shorts"]),
+  ytm-shorts-lockup-view-model-v2,
+  yt-tab-shape[tab-title="Shorts"],
+  ytd-shorts
+) {
+  display: none !important;
+}
+
+html.focus-hide-youtube-distractions ytd-watch-flexy #columns {
+  max-width: none !important;
+}
+
+html.focus-hide-youtube-distractions ytd-watch-flexy #primary {
+  flex: 1 1 auto !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  width: 100% !important;
+}
+
+html.focus-hide-youtube-distractions ytd-watch-flexy #primary-inner {
+  max-width: none !important;
+}
+
+html.focus-hide-youtube-distractions ytd-watch-flexy[is-two-columns_]:not([theater])
+  #player-container-outer {
+  max-width: none !important;
+}
+
+html.focus-hide-youtube-distractions ytd-watch-flexy[is-two-columns_]:not([theater])
+  #primary {
+  padding-top: 0 !important;
+}
+
+html.focus-hide-youtube-distractions ytd-guide-section-renderer:has(
+  a[href*="/feed/history"]
+) {
+  border-bottom: 0 !important;
+}

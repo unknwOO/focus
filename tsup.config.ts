@@ -9,11 +9,14 @@ export default defineConfig({
     "src/background.ts",
     "src/blocked.ts",
     "src/options.ts",
+    "src/popup.ts",
+    "src/youtube-distractions.ts",
   ],
   env: { TARGET },
   outDir: `dist/${TARGET}`,
   target: "es2022",
   format: "esm",
+  splitting: false,
   treeshake: true,
   noExternal: ["dayjs"],
   esbuildOptions(options) {
@@ -28,6 +31,9 @@ export default defineConfig({
       "blocked.html",
       "options.css",
       "options.html",
+      "popup.css",
+      "popup.html",
+      "youtube-distractions.css",
       `manifest-${TARGET}.json`,
     ];
 

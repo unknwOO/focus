@@ -1,6 +1,6 @@
 # Focus
 
-**Focus** blocks distracting websites and protects its settings with a passcode.
+**Focus** blocks distracting websites, hides YouTube distractions, and protects its settings with a passcode.
 
 ## Icon
 
@@ -8,7 +8,9 @@
 
 ## Usage
 
-Click on the icon. Enter sites to block. See [Special characters](#special-characters) and [Examples](#examples).
+Click the icon, then select **Open Settings** to configure sites to block. See [Special characters](#special-characters) and [Examples](#examples).
+
+The toolbar popup hides the YouTube Home feed, related video suggestions, end-screen suggestions, and Shorts. Turn the toggle off to reveal them for 15 minutes. Focus hides them again automatically when the pause expires.
 
 Choose how to resolve blocked: **Close Tab**, or **Show Blocked info page**.
 

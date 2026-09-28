@@ -18,6 +18,7 @@ const getAll = () => get([
   "resolution",
   "schedule",
   "passcode",
+  "youtubeDistractionsPausedUntil",
 ]);
 
 export default {

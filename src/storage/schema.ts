@@ -22,6 +22,7 @@ export interface Schema {
   resolution: Resolution;
   schedule: string;
   passcode: PasscodeState;
+  youtubeDistractionsPausedUntil: number;
 }
 
 export const DEFAULTS: Readonly<Schema> = {
@@ -34,6 +35,7 @@ export const DEFAULTS: Readonly<Schema> = {
   resolution: "CLOSE_TAB",
   schedule: "",
   passcode: createEmptyPasscode(),
+  youtubeDistractionsPausedUntil: 0,
 };
 
 export const VALIDATORS: Readonly<
@@ -48,6 +50,9 @@ export const VALIDATORS: Readonly<
   counterPeriod: (value) => COUNTER_PERIODS.includes(value as CounterPeriod),
   resolution: (value) => RESOLUTIONS.includes(value as Resolution),
   schedule: (value) => typeof value === "string",
+  youtubeDistractionsPausedUntil: (value) => (
+    typeof value === "number" && Number.isFinite(value) && value >= 0
+  ),
   passcode: (value) => {
     if (!value || typeof value !== "object") return false;
     const passcode = value as PasscodeState;

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Focus</title>
+  <link rel="stylesheet" href="popup.css">
+  <script type="module" src="popup.mjs"></script>
+</head>
+
+<body>
+  <main>
+    <label class="toggle-row" for="youtube-distractions-toggle">
+      <span>Hide YouTube Distractions</span>
+      <span class="switch">
+        <input id="youtube-distractions-toggle" type="checkbox">
+        <span class="slider"></span>
+      </span>
+    </label>
+    <div id="youtube-distractions-status" aria-live="polite">
+      <strong id="youtube-distractions-status-title"></strong>
+      <span id="youtube-distractions-status-detail"></span>
+    </div>
+  </main>
+
+  <button id="open-settings" type="button">Open Settings</button>
+</body>
+
+</html>

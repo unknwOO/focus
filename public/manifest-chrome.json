@@ -1,13 +1,14 @@
 {
   "manifest_version": 3,
   "name": "Focus",
-  "description": "Block distracting websites and protect your settings with a passcode.",
-  "version": "1.0.0",
+  "description": "Block distracting websites, hide YouTube distractions, and protect settings with a passcode.",
+  "version": "1.1.0",
   "icons": {
     "32": "icon_32.png",
     "128": "icon_128.png"
   },
   "action": {
+    "default_popup": "popup.html",
     "default_icon": {
       "32": "icon_32.png",
       "128": "icon_128.png"
@@ -24,6 +25,17 @@
     "service_worker": "background.mjs",
     "type": "module"
   },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://youtube.com/*",
+        "https://www.youtube.com/*"
+      ],
+      "css": ["youtube-distractions.css"],
+      "js": ["youtube-distractions.mjs"],
+      "run_at": "document_start"
+    }
+  ],
   "incognito": "split",
-  "minimum_chrome_version": "92"
+  "minimum_chrome_version": "105"
 }

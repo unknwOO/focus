@@ -109,10 +109,6 @@ chrome.runtime.onMessage.addListener((message: unknown, sender, sendResponse) =>
   return true;
 });
 
-chrome.action.onClicked.addListener(() => {
-  chrome.runtime.openOptionsPage();
-});
-
 chrome.webNavigation.onBeforeNavigate.addListener((details) => {
   if (!__enabled || !__blocked.length) {
     return;

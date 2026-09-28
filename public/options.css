@@ -241,7 +241,6 @@ fieldset {
 
 #passcode-dialog::backdrop {
   background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(14px);
 }
 
 #passcode-dialog-body {

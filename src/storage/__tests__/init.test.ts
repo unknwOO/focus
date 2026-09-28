@@ -17,6 +17,7 @@ test("getRevisitedSchema() returns defaults for any invalid attribute", () => {
     resolution: DEFAULTS.resolution,
     schedule: DEFAULTS.schedule,
     passcode: DEFAULTS.passcode,
+    youtubeDistractionsPausedUntil: DEFAULTS.youtubeDistractionsPausedUntil,
   } as Partial<Schema>);
 
   expect(getRevisitedSchema({
