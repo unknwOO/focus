@@ -1,8 +1,8 @@
+import makeRules, { type Rule } from "./make-rules";
 import removeProtocol from "./remove-protocol";
-import makeRules, { Rule } from "./make-rules";
 
 export interface CompiledRule extends Rule {
-  patterns: RegExp[]
+  patterns: RegExp[];
 }
 
 const expandPath = (path: string) => {
@@ -20,27 +20,25 @@ const expandPath = (path: string) => {
   return expanded;
 };
 
-export const compileRules = (blocked: string[]): CompiledRule[] => (
+export const compileRules = (blocked: string[]): CompiledRule[] =>
   makeRules(blocked).map((rule) => ({
     ...rule,
     patterns: expandPath(rule.path)
       .map((path) => path.replace(/[.+]/g, "\\$&")) // escape regex characters
-      .map((path) => (
-        "^"
-        + path
-          .replace(/\?/g, ".")   // user can type "?" to match any one character
-          .replace(/\*/g, ".*")  // user can type "*" to match any zero or more characters
-        + "$"
-      ))
+      .map(
+        (path) =>
+          "^" +
+          path
+            .replace(/\?/g, ".") // user can type "?" to match any one character
+            .replace(/\*/g, ".*") + // user can type "*" to match any zero or more characters
+          "$",
+      )
       .map((pattern) => new RegExp(pattern)),
-  }))
-);
+  }));
 
 export const findCompiledRule = (url: string, rules: CompiledRule[]) => {
   const normalizedUrl = removeProtocol(url);
-  return rules.find(({ patterns }) => (
-    patterns.some((pattern) => normalizedUrl.match(pattern))
-  ));
+  return rules.find(({ patterns }) => patterns.some((pattern) => normalizedUrl.match(pattern)));
 };
 
 export default (url: string, blocked: string[]): Rule | undefined => {

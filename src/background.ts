@@ -1,8 +1,5 @@
-import initStorage from "./storage/init";
-import storage, { VALIDATORS } from "./storage";
-import recreateContextMenu from "./helpers/recreate-context-menu";
 import blockUrl from "./helpers/block-url";
-import { compileRules, type CompiledRule } from "./helpers/find-rule";
+import { type CompiledRule, compileRules } from "./helpers/find-rule";
 import {
   isParsedScheduleActive,
   parseSchedule,
@@ -11,13 +8,13 @@ import {
 import { createPasscode, verifyPasscode } from "./helpers/passcode";
 import {
   PROTECTED_SETTING_KEYS,
-  ProtectedSettingsController,
   type ProtectedSettingKey,
+  ProtectedSettingsController,
 } from "./helpers/protected-settings";
-import type {
-  SettingsMessage,
-  SettingsMessageResponse,
-} from "./helpers/settings-messages";
+import recreateContextMenu from "./helpers/recreate-context-menu";
+import type { SettingsMessage, SettingsMessageResponse } from "./helpers/settings-messages";
+import storage, { VALIDATORS } from "./storage";
+import initStorage from "./storage/init";
 
 let __enabled = false;
 let __contextMenu = false;
@@ -62,22 +59,23 @@ const controllerReady = initStorage()
     syncProtectedSettings(true);
 
     chrome.storage.local.onChanged.addListener((changes) => {
-      const protectedChange = [...PROTECTED_SETTING_KEYS, "passcode"]
-        .some((key) => changes[key] !== undefined);
+      const protectedChange = [...PROTECTED_SETTING_KEYS, "passcode"].some(
+        (key) => changes[key] !== undefined,
+      );
       if (!protectedChange) return;
 
       const refreshContextMenu = Boolean(changes.enabled || changes.contextMenu);
-      void __settingsController.restoreUnauthorizedChanges(changes)
+      void __settingsController
+        .restoreUnauthorizedChanges(changes)
         .then(() => syncProtectedSettings(refreshContextMenu));
     });
   });
 
-const isSettingsMessage = (message: unknown): message is SettingsMessage => (
-  message !== null
-  && typeof message === "object"
-  && "type" in message
-  && typeof (message as { type?: unknown }).type === "string"
-);
+const isSettingsMessage = (message: unknown): message is SettingsMessage =>
+  message !== null &&
+  typeof message === "object" &&
+  "type" in message &&
+  typeof (message as { type?: unknown }).type === "string";
 
 chrome.runtime.onMessage.addListener((message: unknown, sender, sendResponse) => {
   if (sender.id !== chrome.runtime.id || !isSettingsMessage(message)) return false;
@@ -91,9 +89,9 @@ chrome.runtime.onMessage.addListener((message: unknown, sender, sendResponse) =>
     } else if (message.type === "UNLOCK_SETTINGS" && /^\d{4}$/.test(message.passcode)) {
       success = await __settingsController.unlock(message.passcode);
     } else if (
-      message.type === "SET_PROTECTED_SETTING"
-      && PROTECTED_SETTING_KEYS.includes(message.key)
-      && VALIDATORS[message.key](message.value)
+      message.type === "SET_PROTECTED_SETTING" &&
+      PROTECTED_SETTING_KEYS.includes(message.key) &&
+      VALIDATORS[message.key](message.value)
     ) {
       success = await __settingsController.setSetting(
         message.key as ProtectedSettingKey,
@@ -115,7 +113,7 @@ chrome.webNavigation.onBeforeNavigate.addListener((details) => {
   }
 
   const { tabId, url, frameId } = details;
-  if (!url || !url.startsWith("http") || frameId !== 0) {
+  if (!url?.startsWith("http") || frameId !== 0) {
     return;
   }
 
@@ -128,7 +126,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
   }
 
   const { url } = changeInfo;
-  if (!url || !url.startsWith("http")) {
+  if (!url?.startsWith("http")) {
     return;
   }
 

@@ -15,9 +15,7 @@ const handleClick = (info: chrome.contextMenus.OnClickData, tab?: chrome.tabs.Ta
   }
 
   const url = info.pageUrl;
-  const blockedUrl = info.menuItemId === blockOneId
-    ? removeProtocol(url)
-    : new URL(url).host;
+  const blockedUrl = info.menuItemId === blockOneId ? removeProtocol(url) : new URL(url).host;
 
   currentHandler(blockedUrl, tabId, url);
 };
@@ -49,12 +47,15 @@ const createContextMenu = () => {
 
 export default (meetsCreateCondition: boolean, onBlock: ContextMenuBlockHandler) => {
   currentHandler = meetsCreateCondition ? onBlock : undefined;
-  recreateQueue = recreateQueue.then(() => new Promise<void>((resolve) => {
-    chrome.contextMenus.removeAll(() => {
-      if (meetsCreateCondition) {
-        createContextMenu();
-      }
-      resolve();
-    });
-  }));
+  recreateQueue = recreateQueue.then(
+    () =>
+      new Promise<void>((resolve) => {
+        chrome.contextMenus.removeAll(() => {
+          if (meetsCreateCondition) {
+            createContextMenu();
+          }
+          resolve();
+        });
+      }),
+  );
 };

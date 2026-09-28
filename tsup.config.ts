@@ -1,5 +1,5 @@
-import { defineConfig } from "tsup";
 import { copyFile } from "node:fs/promises";
+import { defineConfig } from "tsup";
 
 const TARGET = process.env.TARGET as "chrome" | "firefox";
 
@@ -22,25 +22,28 @@ export default defineConfig({
   esbuildOptions(options) {
     options.chunkNames = "chunks/[name]-[hash]";
   },
-  onSuccess: () => new Promise((resolve, reject) => {
-    const files = [
-      "icon_32.png",
-      "icon_128.png",
-      "common.css",
-      "blocked.css",
-      "blocked.html",
-      "options.css",
-      "options.html",
-      "popup.css",
-      "popup.html",
-      "youtube-distractions.css",
-      `manifest-${TARGET}.json`,
-    ];
+  onSuccess: () =>
+    new Promise((resolve, reject) => {
+      const files = [
+        "icon_32.png",
+        "icon_128.png",
+        "common.css",
+        "blocked.css",
+        "blocked.html",
+        "options.css",
+        "options.html",
+        "popup.css",
+        "popup.html",
+        "youtube-distractions.css",
+        `manifest-${TARGET}.json`,
+      ];
 
-    const copyFilesPromises = files.map((file) => (
-      copyFile(`public/${file}`, `dist/${TARGET}/${file.replace(`-${TARGET}`, "")}`)
-    ));
+      const copyFilesPromises = files.map((file) =>
+        copyFile(`public/${file}`, `dist/${TARGET}/${file.replace(`-${TARGET}`, "")}`),
+      );
 
-    Promise.all(copyFilesPromises).then(() => resolve()).catch(reject);
-  }),
+      Promise.all(copyFilesPromises)
+        .then(() => resolve())
+        .catch(reject);
+    }),
 });

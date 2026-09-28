@@ -1,5 +1,5 @@
-import { VALIDATORS, CounterPeriod } from "./storage";
 import getBlockedMessage from "./helpers/get-blocked-message";
+import { type CounterPeriod, VALIDATORS } from "./storage";
 
 window.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
@@ -14,11 +14,12 @@ window.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  const count = parseInt(params.get("count") || "");
+  const count = parseInt(params.get("count") || "", 10);
   const period = params.get("period");
-  const countParams = (!isNaN(count) && VALIDATORS.counterPeriod(period))
-    ? { count, period: period as CounterPeriod }
-    : undefined;
+  const countParams =
+    !Number.isNaN(count) && VALIDATORS.counterPeriod(period)
+      ? { count, period: period as CounterPeriod }
+      : undefined;
 
   const message = getBlockedMessage({
     url,

@@ -1,22 +1,13 @@
-import {
-  createEmptyPasscode,
-  getPasscodeRetryDelay,
-  type PasscodeState,
-} from "./passcode";
 import type { Schema } from "../storage";
+import { createEmptyPasscode, getPasscodeRetryDelay, type PasscodeState } from "./passcode";
 
-export const PROTECTED_SETTING_KEYS = [
-  "enabled",
-  "contextMenu",
-  "blocked",
-  "schedule",
-] as const;
+export const PROTECTED_SETTING_KEYS = ["enabled", "contextMenu", "blocked", "schedule"] as const;
 
 export type ProtectedSettingKey = (typeof PROTECTED_SETTING_KEYS)[number];
 export type ProtectedSettings = Pick<Schema, ProtectedSettingKey | "passcode">;
 
 export type PasscodeLockState = Pick<PasscodeState, "failedAttempts" | "lockedUntil"> & {
-  hasPasscode: boolean
+  hasPasscode: boolean;
 };
 
 type StorageChanges = Record<string, { newValue?: unknown }>;
@@ -25,7 +16,8 @@ type CreatePasscode = (passcode: string) => Promise<PasscodeState>;
 type VerifyPasscode = (passcode: string, state: PasscodeState) => Promise<boolean>;
 
 const hasPasscode = (state: PasscodeState) => Boolean(state.hash && state.salt);
-const valuesMatch = (left: unknown, right: unknown) => JSON.stringify(left) === JSON.stringify(right);
+const valuesMatch = (left: unknown, right: unknown) =>
+  JSON.stringify(left) === JSON.stringify(right);
 
 export class ProtectedSettingsController {
   private settings: ProtectedSettings;
@@ -136,7 +128,10 @@ export class ProtectedSettingsController {
 
   private runExclusive<T>(operation: () => Promise<T>) {
     const result = this.operationQueue.then(operation, operation);
-    this.operationQueue = result.then(() => undefined, () => undefined);
+    this.operationQueue = result.then(
+      () => undefined,
+      () => undefined,
+    );
     return result;
   }
 }

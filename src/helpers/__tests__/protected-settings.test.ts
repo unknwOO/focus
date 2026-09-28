@@ -1,8 +1,5 @@
 import { createEmptyPasscode, type PasscodeState } from "../passcode";
-import {
-  ProtectedSettingsController,
-  type ProtectedSettings,
-} from "../protected-settings";
+import { type ProtectedSettings, ProtectedSettingsController } from "../protected-settings";
 
 const lockedPasscode: PasscodeState = {
   hash: "hash",
@@ -120,10 +117,7 @@ test("concurrent attempts cannot bypass the retry delay", async () => {
   const passcode = { ...lockedPasscode, failedAttempts: 4 };
   const { controller, write } = createController(passcode);
 
-  const results = await Promise.all([
-    controller.unlock("0000"),
-    controller.unlock("0000"),
-  ]);
+  const results = await Promise.all([controller.unlock("0000"), controller.unlock("0000")]);
 
   expect(results).toEqual([false, false]);
   expect(write).toHaveBeenCalledTimes(1);

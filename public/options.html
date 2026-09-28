@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <meta charset="utf-8">
@@ -13,14 +13,14 @@
 <body>
   <h1>
     <button id="passcode-button" type="button" aria-label="Set passcode" title="Set passcode">
-      <img src="icon_128.png">
+      <img src="icon_128.png" alt="">
     </button>
     <span>ocus</span>
   </h1>
 
   <div class="options">
     <div id="enabled-option" class="option">
-      <label>Enabled?</label>
+      <label for="enabled">Enabled?</label>
       <select id="enabled">
         <option value="YES">Yes</option>
         <option value="NO">No</option>
@@ -28,7 +28,7 @@
     </div>
 
     <div id="context-menu-option" class="option">
-      <label>Context menu?</label>
+      <label for="context-menu">Context menu?</label>
       <select id="context-menu">
         <option value="YES">Yes</option>
         <option value="NO">No</option>
@@ -57,7 +57,7 @@
 
   <div class="options">
     <div id="resolution-option" class="option baseline">
-      <label>How to resolve blocked?</label>
+      <label for="resolution">How to resolve blocked?</label>
       <div>
         <select id="resolution">
           <option value="CLOSE_TAB">Close Tab</option>
@@ -66,7 +66,7 @@
 
         <fieldset id="blocked-info-page-details">
           <div class="option">
-            <label>Show blocked count?</label>
+            <label for="counter-show">Show blocked count?</label>
             <select id="counter-show">
               <option value="YES">Yes</option>
               <option value="NO">No</option>
@@ -74,7 +74,7 @@
           </div>
 
           <div id="counter-period-option" class="option">
-            <label>Blocked count period?</label>
+            <label for="counter-period">Blocked count period?</label>
             <select id="counter-period">
               <option value="ALL_TIME">All Time</option>
               <option value="THIS_MONTH">This Month</option>
@@ -89,7 +89,7 @@
 
   <dialog id="passcode-dialog">
     <div id="passcode-dialog-body">
-      <div id="passcode-inputs" aria-label="Four-digit passcode">
+      <div id="passcode-inputs">
         <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 1">
         <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 2">
         <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 3">

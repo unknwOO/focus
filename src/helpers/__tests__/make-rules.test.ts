@@ -1,8 +1,4 @@
-import makeRules, {
-  hasInvalidSiteRules,
-  isSiteRuleLineInvalid,
-  Rule,
-} from "../make-rules";
+import makeRules, { hasInvalidSiteRules, isSiteRuleLineInvalid, type Rule } from "../make-rules";
 
 test("makeRules()", () => {
   expect(
@@ -29,10 +25,9 @@ test("makeRules()", () => {
 });
 
 test("makeRules() parses per-site schedule overrides", () => {
-  expect(makeRules([
-    "instagram.com | 8-10, 14:00-16:30",
-    "youtube.com | !12-13, *",
-  ])).toEqual<Rule[]>([
+  expect(makeRules(["instagram.com | 8-10, 14:00-16:30", "youtube.com | !12-13, *"])).toEqual<
+    Rule[]
+  >([
     {
       type: "block",
       path: "instagram.com",
@@ -44,10 +39,7 @@ test("makeRules() parses per-site schedule overrides", () => {
     {
       type: "block",
       path: "youtube.com",
-      schedule: [
-        { type: "allow", start: 720, end: 780 },
-        { type: "block-all" },
-      ],
+      schedule: [{ type: "allow", start: 720, end: 780 }, { type: "block-all" }],
     },
   ]);
 });

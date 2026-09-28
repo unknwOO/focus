@@ -7,12 +7,14 @@ import isScheduleActive, {
 
 describe("parseSchedule()", () => {
   it("parses all-day, block and allow rules", () => {
-    expect(parseSchedule(`
+    expect(
+      parseSchedule(`
       * # Block all day
       8-12 # Morning
       !14:30-16:00 # Break
       # 18-20 # Disabled
-    `)).toEqual([
+    `),
+    ).toEqual([
       { type: "block-all" },
       { type: "block", start: 480, end: 720 },
       { type: "allow", start: 870, end: 960 },

@@ -1,14 +1,14 @@
-import { CounterPeriod } from "../storage";
+import type { CounterPeriod } from "../storage";
 
 export const __getBlockedHtmlUrl = () => chrome.runtime.getURL("blocked.html");
 
 export interface GetBlockedUrlParams {
-  url: string
-  rule: string
+  url: string;
+  rule: string;
   countParams?: {
-    count: number
-    period: CounterPeriod
-  }
+    count: number;
+    period: CounterPeriod;
+  };
 }
 
 export default ({ url, rule, countParams }: GetBlockedUrlParams): string => {

@@ -15,22 +15,14 @@
     }
   },
   "options_page": "options.html",
-  "permissions": [
-    "storage",
-    "tabs",
-    "webNavigation",
-    "contextMenus"
-  ],
+  "permissions": ["storage", "tabs", "webNavigation", "contextMenus"],
   "background": {
     "service_worker": "background.mjs",
     "type": "module"
   },
   "content_scripts": [
     {
-      "matches": [
-        "https://youtube.com/*",
-        "https://www.youtube.com/*"
-      ],
+      "matches": ["https://youtube.com/*", "https://www.youtube.com/*"],
       "css": ["youtube-distractions.css"],
       "js": ["youtube-distractions.mjs"],
       "run_at": "document_start"

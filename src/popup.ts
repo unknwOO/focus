@@ -1,17 +1,13 @@
-import storage from "./storage";
 import {
   areYouTubeDistractionsHidden,
   normalizeYouTubeDistractionsPausedUntil,
   pauseYouTubeDistractions,
 } from "./helpers/youtube-distractions";
+import storage from "./storage";
 
 const toggle = document.getElementById("youtube-distractions-toggle") as HTMLInputElement;
-const statusTitle = document.getElementById(
-  "youtube-distractions-status-title",
-) as HTMLElement;
-const statusDetail = document.getElementById(
-  "youtube-distractions-status-detail",
-) as HTMLElement;
+const statusTitle = document.getElementById("youtube-distractions-status-title") as HTMLElement;
+const statusDetail = document.getElementById("youtube-distractions-status-detail") as HTMLElement;
 const openSettings = document.getElementById("open-settings") as HTMLButtonElement;
 let pausedUntil = 0;
 
@@ -41,9 +37,7 @@ openSettings.addEventListener("click", () => {
 });
 
 void storage.get(["youtubeDistractionsPausedUntil"]).then((settings) => {
-  pausedUntil = normalizeYouTubeDistractionsPausedUntil(
-    settings.youtubeDistractionsPausedUntil,
-  );
+  pausedUntil = normalizeYouTubeDistractionsPausedUntil(settings.youtubeDistractionsPausedUntil);
   render();
   document.body.classList.add("ready");
   window.requestAnimationFrame(() => {

@@ -2,12 +2,7 @@ import { createEmptyPasscode, type PasscodeState } from "../helpers/passcode";
 
 export const RESOLUTIONS = ["CLOSE_TAB", "SHOW_BLOCKED_INFO_PAGE"] as const;
 
-export const COUNTER_PERIODS = [
-  "ALL_TIME",
-  "THIS_MONTH",
-  "THIS_WEEK",
-  "TODAY",
-] as const;
+export const COUNTER_PERIODS = ["ALL_TIME", "THIS_MONTH", "THIS_WEEK", "TODAY"] as const;
 
 export type Resolution = (typeof RESOLUTIONS)[number];
 export type CounterPeriod = (typeof COUNTER_PERIODS)[number];
@@ -38,21 +33,17 @@ export const DEFAULTS: Readonly<Schema> = {
   youtubeDistractionsPausedUntil: 0,
 };
 
-export const VALIDATORS: Readonly<
-  Record<keyof Schema, (value: unknown) => boolean>
-> = {
+export const VALIDATORS: Readonly<Record<keyof Schema, (value: unknown) => boolean>> = {
   enabled: (value) => typeof value === "boolean",
   contextMenu: (value) => typeof value === "boolean",
-  blocked: (value) =>
-    Array.isArray(value) && value.every((item) => typeof item === "string"),
+  blocked: (value) => Array.isArray(value) && value.every((item) => typeof item === "string"),
   counter: (value) => typeof value === "object",
   counterShow: (value) => typeof value === "boolean",
   counterPeriod: (value) => COUNTER_PERIODS.includes(value as CounterPeriod),
   resolution: (value) => RESOLUTIONS.includes(value as Resolution),
   schedule: (value) => typeof value === "string",
-  youtubeDistractionsPausedUntil: (value) => (
-    typeof value === "number" && Number.isFinite(value) && value >= 0
-  ),
+  youtubeDistractionsPausedUntil: (value) =>
+    typeof value === "number" && Number.isFinite(value) && value >= 0,
   passcode: (value) => {
     if (!value || typeof value !== "object") return false;
     const passcode = value as PasscodeState;

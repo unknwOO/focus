@@ -1,15 +1,17 @@
 import { getRevisitedSchema } from "../init";
-import { Schema, DEFAULTS } from "../schema";
+import { DEFAULTS, type Schema } from "../schema";
 
 test("getRevisitedSchema() returns defaults for any invalid attribute", () => {
   expect(getRevisitedSchema({})).toEqual(DEFAULTS);
 
   expect(getRevisitedSchema(DEFAULTS)).toEqual({});
 
-  expect(getRevisitedSchema({
-    enabled: DEFAULTS.enabled,
-    blocked: DEFAULTS.blocked,
-  })).toEqual({
+  expect(
+    getRevisitedSchema({
+      enabled: DEFAULTS.enabled,
+      blocked: DEFAULTS.blocked,
+    }),
+  ).toEqual({
     contextMenu: false,
     counter: DEFAULTS.counter,
     counterShow: DEFAULTS.counterShow,
@@ -20,24 +22,27 @@ test("getRevisitedSchema() returns defaults for any invalid attribute", () => {
     youtubeDistractionsPausedUntil: DEFAULTS.youtubeDistractionsPausedUntil,
   } as Partial<Schema>);
 
-  expect(getRevisitedSchema({
-    ...DEFAULTS,
-    enabled: "YES",     // invalid
-    contextMenu: "YES", // invalid
-  })).toEqual({
+  expect(
+    getRevisitedSchema({
+      ...DEFAULTS,
+      enabled: "YES", // invalid
+      contextMenu: "YES", // invalid
+    }),
+  ).toEqual({
     enabled: DEFAULTS.enabled,
     contextMenu: DEFAULTS.contextMenu,
   } as Partial<Schema>);
 
-  expect(getRevisitedSchema({
-    ...DEFAULTS,
-    enabled: "YES", // invalid
-    blocked: "ALL", // invalid
-    resolution: "BLOCK", // invalid
-  })).toEqual({
+  expect(
+    getRevisitedSchema({
+      ...DEFAULTS,
+      enabled: "YES", // invalid
+      blocked: "ALL", // invalid
+      resolution: "BLOCK", // invalid
+    }),
+  ).toEqual({
     enabled: DEFAULTS.enabled,
     blocked: DEFAULTS.blocked,
     resolution: DEFAULTS.resolution,
   } as Partial<Schema>);
-
 });

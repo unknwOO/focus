@@ -1,8 +1,8 @@
 export type PasscodeState = {
-  hash: string
-  salt: string
-  failedAttempts: number
-  lockedUntil: number
+  hash: string;
+  salt: string;
+  failedAttempts: number;
+  lockedUntil: number;
 };
 
 export const createEmptyPasscode = (): PasscodeState => ({
@@ -15,13 +15,11 @@ export const createEmptyPasscode = (): PasscodeState => ({
 const ITERATIONS = 600_000;
 const KEY_LENGTH = 256;
 
-const bytesToHex = (bytes: Uint8Array) => (
-  Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("")
-);
+const bytesToHex = (bytes: Uint8Array) =>
+  Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
 
-const hexToBytes = (hex: string) => (
-  new Uint8Array(hex.match(/.{2}/g)?.map((byte) => Number.parseInt(byte, 16)) || [])
-);
+const hexToBytes = (hex: string) =>
+  new Uint8Array(hex.match(/.{2}/g)?.map((byte) => Number.parseInt(byte, 16)) || []);
 
 const deriveHash = async (passcode: string, salt: string) => {
   const key = await crypto.subtle.importKey(
@@ -31,12 +29,16 @@ const deriveHash = async (passcode: string, salt: string) => {
     false,
     ["deriveBits"],
   );
-  const bits = await crypto.subtle.deriveBits({
-    name: "PBKDF2",
-    hash: "SHA-256",
-    salt: hexToBytes(salt),
-    iterations: ITERATIONS,
-  }, key, KEY_LENGTH);
+  const bits = await crypto.subtle.deriveBits(
+    {
+      name: "PBKDF2",
+      hash: "SHA-256",
+      salt: hexToBytes(salt),
+      iterations: ITERATIONS,
+    },
+    key,
+    KEY_LENGTH,
+  );
   return bytesToHex(new Uint8Array(bits));
 };
 
@@ -62,9 +64,8 @@ export const createPasscode = async (passcode: string): Promise<PasscodeState> =
   };
 };
 
-export const verifyPasscode = async (passcode: string, state: PasscodeState) => (
-  hashesMatch(await deriveHash(passcode, state.salt), state.hash)
-);
+export const verifyPasscode = async (passcode: string, state: PasscodeState) =>
+  hashesMatch(await deriveHash(passcode, state.salt), state.hash);
 
 export const getPasscodeRetryDelay = (failedAttempts: number) => {
   if (failedAttempts < 5) return 0;

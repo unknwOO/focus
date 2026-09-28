@@ -1,19 +1,15 @@
-import storage, {
-  Schema, Resolution, CounterPeriod, RESOLUTIONS, BLOCKED_EXAMPLE, SCHEDULE_EXAMPLE,
-} from "./storage";
-import {
-  hasInvalidScheduleRules,
-  isScheduleLineInvalid,
-} from "./helpers/is-schedule-active";
-import {
-  hasInvalidSiteRules,
-  isSiteRuleLineInvalid,
-} from "./helpers/make-rules";
-import {
-  type PasscodeLockState,
-  type ProtectedSettingKey,
-} from "./helpers/protected-settings";
+import { hasInvalidScheduleRules, isScheduleLineInvalid } from "./helpers/is-schedule-active";
+import { hasInvalidSiteRules, isSiteRuleLineInvalid } from "./helpers/make-rules";
+import type { PasscodeLockState, ProtectedSettingKey } from "./helpers/protected-settings";
 import { sendSettingsMessage } from "./helpers/settings-messages";
+import storage, {
+  BLOCKED_EXAMPLE,
+  type CounterPeriod,
+  RESOLUTIONS,
+  type Resolution,
+  SCHEDULE_EXAMPLE,
+  type Schema,
+} from "./storage";
 
 const UI = (() => {
   const elements = {
@@ -31,7 +27,9 @@ const UI = (() => {
     counterPeriod: document.getElementById("counter-period") as HTMLSelectElement,
     settingsLock: document.getElementById("passcode-button") as HTMLButtonElement,
     passcodeDialog: document.getElementById("passcode-dialog") as HTMLDialogElement,
-    passcodeInputs: Array.from(document.querySelectorAll<HTMLInputElement>("#passcode-inputs input")),
+    passcodeInputs: Array.from(
+      document.querySelectorAll<HTMLInputElement>("#passcode-inputs input"),
+    ),
     passcodePrompt: document.getElementById("passcode-prompt") as HTMLParagraphElement,
     passcodeError: document.getElementById("passcode-error") as HTMLParagraphElement,
     passcodeClose: document.getElementById("passcode-close") as HTMLButtonElement,
@@ -57,7 +55,7 @@ const UI = (() => {
   elements.blockedList.placeholder = BLOCKED_EXAMPLE.join("\n");
   elements.scheduleRules.placeholder = SCHEDULE_EXAMPLE.join("\n");
 
-  const booleanToString = (b: boolean) => b ? "YES" : "NO";
+  const booleanToString = (b: boolean) => (b ? "YES" : "NO");
   const stringToBoolean = (s: string) => s === "YES";
   const isSettingsLocked = () => passcode.hasPasscode;
 
@@ -133,9 +131,8 @@ const UI = (() => {
     passcodeMode = isSettingsLocked() ? "unlock" : "setup";
     setupStep = 1;
     setupPasscode = "";
-    elements.passcodePrompt.textContent = passcodeMode === "unlock"
-      ? "Enter Screen Time passcode"
-      : "Enter new Screen Time passcode";
+    elements.passcodePrompt.textContent =
+      passcodeMode === "unlock" ? "Enter Screen Time passcode" : "Enter new Screen Time passcode";
     elements.passcodeError.textContent = "";
     elements.passcodeDialog.showModal();
     setPasscodeInputsDisabled(false);
@@ -145,8 +142,13 @@ const UI = (() => {
     }
   };
 
-  const getEventTargetValue = (event: Event) => (event.target as HTMLTextAreaElement | HTMLSelectElement).value;
-  const stringToBlocked = (string: string) => string.split("\n").map((s) => s.trim()).filter(Boolean);
+  const getEventTargetValue = (event: Event) =>
+    (event.target as HTMLTextAreaElement | HTMLSelectElement).value;
+  const stringToBlocked = (string: string) =>
+    string
+      .split("\n")
+      .map((s) => s.trim())
+      .filter(Boolean);
   const updateEditorValidity = (
     value: string,
     textarea: HTMLTextAreaElement,
@@ -264,9 +266,9 @@ const UI = (() => {
     }
 
     if (
-      items.schedule !== undefined
-      && document.activeElement !== elements.scheduleRules
-      && elements.scheduleRules.value !== items.schedule
+      items.schedule !== undefined &&
+      document.activeElement !== elements.scheduleRules &&
+      elements.scheduleRules.value !== items.schedule
     ) {
       elements.scheduleRules.value = items.schedule;
     }
@@ -290,7 +292,6 @@ const UI = (() => {
     if (items.counterPeriod !== undefined) {
       elements.counterPeriod.value = items.counterPeriod;
     }
-
   };
 
   const submitPasscode = async () => {
@@ -399,11 +400,13 @@ window.addEventListener("DOMContentLoaded", () => {
     "schedule",
   ];
 
-  Promise.all([storage.get(keys), sendSettingsMessage({ type: "GET_LOCK_STATE" })]).then(([local, response]) => {
-    UI.setLockState(response.lockState);
-    UI.init(local);
-    document.body.classList.add("ready");
-  });
+  Promise.all([storage.get(keys), sendSettingsMessage({ type: "GET_LOCK_STATE" })]).then(
+    ([local, response]) => {
+      UI.setLockState(response.lockState);
+      UI.init(local);
+      document.body.classList.add("ready");
+    },
+  );
 
   chrome.storage.local.onChanged.addListener((changes) => {
     keys.forEach((key) => {

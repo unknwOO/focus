@@ -1,8 +1,8 @@
-import storage from "./storage";
 import {
   areYouTubeDistractionsHidden,
   normalizeYouTubeDistractionsPausedUntil,
 } from "./helpers/youtube-distractions";
+import storage from "./storage";
 
 const HIDDEN_CLASS = "focus-hide-youtube-distractions";
 let resumeTimer: number | undefined;
@@ -33,10 +33,9 @@ const render = (storedPausedUntil: unknown) => {
 
 document.documentElement.classList.add(HIDDEN_CLASS);
 
-void storage.get(["youtubeDistractionsPausedUntil"])
-  .then(({ youtubeDistractionsPausedUntil }) => {
-    render(youtubeDistractionsPausedUntil);
-  });
+void storage.get(["youtubeDistractionsPausedUntil"]).then(({ youtubeDistractionsPausedUntil }) => {
+  render(youtubeDistractionsPausedUntil);
+});
 
 chrome.storage.local.onChanged.addListener((changes) => {
   if (changes.youtubeDistractionsPausedUntil) {

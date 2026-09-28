@@ -1,16 +1,12 @@
+import { isScheduleLineInvalid, parseSchedule, type ScheduleRule } from "./is-schedule-active";
 import removeProtocol from "./remove-protocol";
-import {
-  isScheduleLineInvalid,
-  parseSchedule,
-  type ScheduleRule,
-} from "./is-schedule-active";
 
-type RuleType = "allow" | "block"
+type RuleType = "allow" | "block";
 
 export interface Rule {
-  type: RuleType
-  path: string
-  schedule?: ScheduleRule[]
+  type: RuleType;
+  path: string;
+  schedule?: ScheduleRule[];
 }
 
 const splitItem = (item: string) => {
@@ -25,9 +21,7 @@ const splitItem = (item: string) => {
   };
 };
 
-const scheduleToLines = (schedule: string) => (
-  schedule.split(",").map((rule) => rule.trim())
-);
+const scheduleToLines = (schedule: string) => schedule.split(",").map((rule) => rule.trim());
 
 export const isSiteRuleLineInvalid = (rawLine: string) => {
   const line = rawLine.trim();
@@ -42,9 +36,8 @@ export const isSiteRuleLineInvalid = (rawLine: string) => {
   return scheduleLines.some((rule) => !rule || isScheduleLineInvalid(rule));
 };
 
-export const hasInvalidSiteRules = (source: string) => (
-  source.split("\n").some(isSiteRuleLineInvalid)
-);
+export const hasInvalidSiteRules = (source: string) =>
+  source.split("\n").some(isSiteRuleLineInvalid);
 
 const makeRule = (item: string, type: RuleType): Rule => {
   const parsed = splitItem(item);
