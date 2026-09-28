@@ -26,6 +26,10 @@
 										<string>https://clients2.9oo91e.qjz9zk/service/update2/crx</string>
 									</dict>
 								</dict>
+								<key>MandatoryExtensionsForIncognitoNavigation</key>
+								<array>
+									<string>knkmlnhemidejkokhljccobomcjkihal</string>
+								</array>
 							</dict>
 						</dict>
 					</array>
@@ -44,7 +48,7 @@
 		</dict>
 	</array>
 	<key>PayloadDescription</key>
-	<string>Force-installs Focus in Helium and disables DevTools for policy-installed extensions.</string>
+	<string>Force-installs Focus in Helium, requires it for Incognito navigation, and disables DevTools for policy-installed extensions.</string>
 	<key>PayloadDisplayName</key>
 	<string>Helium Focus Extension</string>
 	<key>PayloadIdentifier</key>
