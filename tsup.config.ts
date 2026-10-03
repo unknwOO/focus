@@ -34,6 +34,7 @@ export default defineConfig({
         "options.html",
         "popup.css",
         "popup.html",
+        "switch.css",
         "youtube-distractions.css",
         `manifest-${TARGET}.json`,
       ];

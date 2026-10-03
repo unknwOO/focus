@@ -188,6 +188,10 @@ body.settings-locked textarea:disabled {
   margin-bottom: 6px;
 }
 
+.option .switch {
+  font-size: 0.8em;
+}
+
 .option.baseline {
   align-items: baseline;
 }

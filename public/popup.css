@@ -33,52 +33,6 @@ body:not(.ready) {
   cursor: pointer;
 }
 
-.switch {
-  position: relative;
-  flex: 0 0 auto;
-  width: 44px;
-  height: 24px;
-}
-
-.switch input {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-}
-
-.slider {
-  position: absolute;
-  inset: 0;
-  border: 2px solid var(--border-color);
-  border-radius: 999px;
-  background: var(--background-color);
-}
-
-.slider::before {
-  content: "";
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--border-color);
-}
-
-body.interactive .slider::before {
-  transition: transform 120ms ease;
-}
-
-.switch input:checked + .slider::before {
-  transform: translateX(20px);
-}
-
-.switch input:focus-visible + .slider {
-  outline: 3px solid #777;
-  outline-offset: 2px;
-}
-
 #youtube-distractions-status {
   margin-top: 14px;
   padding-left: 10px;

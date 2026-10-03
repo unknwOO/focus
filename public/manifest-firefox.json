@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Focus",
   "description": "Block distracting websites, hide YouTube distractions, and protect settings with a passcode.",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "icons": {
     "32": "icon_32.png",
     "128": "icon_128.png"

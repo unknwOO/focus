@@ -13,8 +13,8 @@ import storage, {
 
 const UI = (() => {
   const elements = {
-    enabled: document.getElementById("enabled") as HTMLSelectElement,
-    contextMenu: document.getElementById("context-menu") as HTMLSelectElement,
+    enabled: document.getElementById("enabled") as HTMLInputElement,
+    contextMenu: document.getElementById("context-menu") as HTMLInputElement,
     blockedList: document.getElementById("blocked-list") as HTMLTextAreaElement,
     blockedHighlight: document.querySelector("#blocked-highlight code") as HTMLElement,
     scheduleRules: document.getElementById("schedule-rules") as HTMLTextAreaElement,
@@ -35,7 +35,7 @@ const UI = (() => {
     passcodeClose: document.getElementById("passcode-close") as HTMLButtonElement,
   };
 
-  const editableElements: (HTMLSelectElement | HTMLTextAreaElement)[] = [
+  const editableElements: (HTMLInputElement | HTMLTextAreaElement)[] = [
     elements.enabled,
     elements.contextMenu,
     elements.blockedList,
@@ -200,16 +200,14 @@ const UI = (() => {
     tab.addEventListener("click", () => showContent(tab.dataset.content || "blocked"));
   });
 
-  elements.enabled.addEventListener("change", (event) => {
+  elements.enabled.addEventListener("change", () => {
     if (isSettingsLocked()) return;
-    const enabled = stringToBoolean(getEventTargetValue(event));
-    setProtectedSetting("enabled", enabled);
+    setProtectedSetting("enabled", elements.enabled.checked);
   });
 
-  elements.contextMenu.addEventListener("change", (event) => {
+  elements.contextMenu.addEventListener("change", () => {
     if (isSettingsLocked()) return;
-    const contextMenu = stringToBoolean(getEventTargetValue(event));
-    setProtectedSetting("contextMenu", contextMenu);
+    setProtectedSetting("contextMenu", elements.contextMenu.checked);
   });
 
   elements.blockedList.addEventListener("input", (event) => {
@@ -250,11 +248,11 @@ const UI = (() => {
 
   const init = <T extends Partial<Schema>>(items: T) => {
     if (items.enabled !== undefined) {
-      elements.enabled.value = booleanToString(items.enabled);
+      elements.enabled.checked = items.enabled;
     }
 
     if (items.contextMenu !== undefined) {
-      elements.contextMenu.value = booleanToString(items.contextMenu);
+      elements.contextMenu.checked = items.contextMenu;
     }
 
     if (items.blocked !== undefined) {
@@ -405,6 +403,9 @@ window.addEventListener("DOMContentLoaded", () => {
       UI.setLockState(response.lockState);
       UI.init(local);
       document.body.classList.add("ready");
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => document.body.classList.add("interactive"));
+      });
     },
   );
 
