@@ -18,7 +18,7 @@
     "page": "options.html",
     "open_in_tab": true
   },
-  "permissions": ["storage", "tabs", "webNavigation", "contextMenus"],
+  "permissions": ["storage", "tabs", "webNavigation", "contextMenus", "alarms"],
   "background": {
     "scripts": ["background.mjs"],
     "type": "module"

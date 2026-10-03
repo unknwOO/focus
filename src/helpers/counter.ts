@@ -27,17 +27,21 @@ export const counterPeriodToTimeStamp = (counterPeriod: CounterPeriod, now: numb
   }
 };
 
-export const add = (
-  rulePath: string,
-  timeStamp: number,
-  { counter, countFromTimeStamp }: Pick<Schema, "counter"> & { countFromTimeStamp: number },
-): number => {
+type CountOptions = Pick<Schema, "counter"> & { countFromTimeStamp: number };
+
+export const count = (rulePath: string, { counter, countFromTimeStamp }: CountOptions): number => {
+  const entries = counter[rulePath] ?? [];
+  return countFromTimeStamp === 0
+    ? entries.length
+    : entries.filter((value) => value >= countFromTimeStamp).length;
+};
+
+export const add = (rulePath: string, timeStamp: number, options: CountOptions): number => {
+  const { counter } = options;
   if (!(rulePath in counter)) {
     counter[rulePath] = [];
   }
 
   counter[rulePath].push(timeStamp);
-  return countFromTimeStamp === 0
-    ? counter[rulePath].length
-    : counter[rulePath].filter((value) => value >= countFromTimeStamp).length;
+  return count(rulePath, options);
 };

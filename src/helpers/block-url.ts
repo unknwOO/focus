@@ -10,10 +10,11 @@ interface BlockUrlOptions {
   schedule?: ScheduleRule[];
   tabId: number;
   url: string;
+  countAttempt?: boolean;
 }
 
 export default (options: BlockUrlOptions) => {
-  const { blocked, rules, schedule = [], tabId, url } = options;
+  const { blocked, rules, schedule = [], tabId, url, countAttempt = true } = options;
   if (!blocked.length || !tabId || !url.startsWith("http")) {
     return;
   }
@@ -30,14 +31,20 @@ export default (options: BlockUrlOptions) => {
   storage
     .get(["counter", "counterShow", "counterPeriod", "resolution"])
     .then(({ counter, counterShow, counterPeriod, resolution }) => {
-      counterHelper.flushObsoleteEntries({ blocked, counter });
-
       const timeStamp = Date.now();
-      const count = counterHelper.add(foundRule.path, timeStamp, {
+      const countOptions = {
         counter,
-        countFromTimeStamp: counterHelper.counterPeriodToTimeStamp(counterPeriod, Date.now()),
-      });
-      storage.set({ counter });
+        countFromTimeStamp: counterHelper.counterPeriodToTimeStamp(counterPeriod, timeStamp),
+      };
+
+      let count: number;
+      if (countAttempt) {
+        counterHelper.flushObsoleteEntries({ blocked, counter });
+        count = counterHelper.add(foundRule.path, timeStamp, countOptions);
+        storage.set({ counter });
+      } else {
+        count = counterHelper.count(foundRule.path, countOptions);
+      }
 
       switch (resolution) {
         case "CLOSE_TAB":

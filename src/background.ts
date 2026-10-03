@@ -1,7 +1,7 @@
 import blockUrl from "./helpers/block-url";
 import { type CompiledRule, compileRules } from "./helpers/find-rule";
 import {
-  isParsedScheduleActive,
+  getNextScheduleBoundary,
   parseSchedule,
   type ScheduleRule,
 } from "./helpers/is-schedule-active";
@@ -23,13 +23,41 @@ let __rules: CompiledRule[] = [];
 let __schedule: ScheduleRule[] = [];
 let __settingsController: ProtectedSettingsController;
 
-const handleContextMenuBlock = async (blockedUrl: string, tabId: number, url: string) => {
-  const settings = __settingsController.getSettings();
-  const blocked = await __settingsController.addBlockedRule(blockedUrl);
-  if (!blocked) return;
+const SCHEDULE_BOUNDARY_ALARM = "schedule-boundary";
+const SCHEDULE_SAFETY_ALARM = "schedule-safety";
 
-  if (isParsedScheduleActive(parseSchedule(settings.schedule))) {
-    blockUrl({ blocked, tabId, url });
+const enforceOpenTabs = async () => {
+  if (!__enabled || !__blocked.length) return;
+
+  const tabs = await chrome.tabs.query({ url: ["http://*/*", "https://*/*"] });
+  for (const { id, url } of tabs) {
+    if (!id || !url) continue;
+    blockUrl({
+      blocked: __blocked,
+      rules: __rules,
+      schedule: __schedule,
+      tabId: id,
+      url,
+      countAttempt: false,
+    });
+  }
+};
+
+// Already-open tabs fire no navigation event when a schedule range starts.
+const scheduleEnforcement = async () => {
+  const nextBoundary =
+    __enabled && __blocked.length
+      ? getNextScheduleBoundary([__schedule, ...__rules.map((rule) => rule.schedule ?? [])])
+      : undefined;
+
+  if (nextBoundary === undefined) {
+    await chrome.alarms.clearAll();
+    return;
+  }
+
+  await chrome.alarms.create(SCHEDULE_BOUNDARY_ALARM, { when: nextBoundary });
+  if (!(await chrome.alarms.get(SCHEDULE_SAFETY_ALARM))) {
+    await chrome.alarms.create(SCHEDULE_SAFETY_ALARM, { periodInMinutes: 1 });
   }
 };
 
@@ -40,9 +68,10 @@ const syncProtectedSettings = (refreshContextMenu = false) => {
   __blocked = settings.blocked;
   __rules = compileRules(settings.blocked);
   __schedule = parseSchedule(settings.schedule);
+  void scheduleEnforcement();
   if (refreshContextMenu) {
-    recreateContextMenu(__enabled && __contextMenu, (blockedUrl, tabId, url) => {
-      void handleContextMenuBlock(blockedUrl, tabId, url);
+    recreateContextMenu(__enabled && __contextMenu, (blockedUrl) => {
+      void __settingsController.addBlockedRule(blockedUrl);
     });
   }
 };
@@ -65,9 +94,11 @@ const controllerReady = initStorage()
       if (!protectedChange) return;
 
       const refreshContextMenu = Boolean(changes.enabled || changes.contextMenu);
-      void __settingsController
-        .restoreUnauthorizedChanges(changes)
-        .then(() => syncProtectedSettings(refreshContextMenu));
+      const blockingChange = Boolean(changes.enabled || changes.blocked || changes.schedule);
+      void __settingsController.restoreUnauthorizedChanges(changes).then(() => {
+        syncProtectedSettings(refreshContextMenu);
+        if (blockingChange) return enforceOpenTabs();
+      });
     });
   });
 
@@ -105,6 +136,15 @@ chrome.runtime.onMessage.addListener((message: unknown, sender, sendResponse) =>
     } satisfies SettingsMessageResponse);
   });
   return true;
+});
+
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name !== SCHEDULE_BOUNDARY_ALARM && alarm.name !== SCHEDULE_SAFETY_ALARM) return;
+
+  void controllerReady.then(async () => {
+    await enforceOpenTabs();
+    if (alarm.name === SCHEDULE_BOUNDARY_ALARM) await scheduleEnforcement();
+  });
 });
 
 chrome.webNavigation.onBeforeNavigate.addListener((details) => {

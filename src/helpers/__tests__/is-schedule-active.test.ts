@@ -1,4 +1,5 @@
 import isScheduleActive, {
+  getNextScheduleBoundary,
   hasInvalidScheduleRules,
   isParsedScheduleActive,
   isScheduleLineInvalid,
@@ -78,5 +79,37 @@ describe("isScheduleActive()", () => {
   it("stays active when the source contains no valid rules", () => {
     expect(isScheduleActive("# *", new Date("2026-09-24T12:00:00Z"))).toBe(true);
     expect(isScheduleActive("banana", new Date("2026-09-24T12:00:00Z"))).toBe(true);
+  });
+});
+
+describe("getNextScheduleBoundary()", () => {
+  it("returns undefined without time ranges", () => {
+    const now = new Date("2026-09-24T12:00:00Z");
+
+    expect(getNextScheduleBoundary([], now)).toBeUndefined();
+    expect(getNextScheduleBoundary([parseSchedule("*")], now)).toBeUndefined();
+  });
+
+  it("returns the closest start or end across all schedules", () => {
+    const now = new Date("2026-09-24T10:30:45Z");
+
+    expect(getNextScheduleBoundary([parseSchedule("8-12")], now)).toBe(
+      Date.parse("2026-09-24T12:00:00Z"),
+    );
+    expect(getNextScheduleBoundary([parseSchedule("8-12"), parseSchedule("!11-11:15")], now)).toBe(
+      Date.parse("2026-09-24T11:00:00Z"),
+    );
+  });
+
+  it("wraps to the next day", () => {
+    expect(getNextScheduleBoundary([parseSchedule("8-12")], new Date("2026-09-24T13:00:00Z"))).toBe(
+      Date.parse("2026-09-25T08:00:00Z"),
+    );
+  });
+
+  it("skips a boundary equal to the current minute", () => {
+    expect(getNextScheduleBoundary([parseSchedule("8-12")], new Date("2026-09-24T08:00:00Z"))).toBe(
+      Date.parse("2026-09-24T12:00:00Z"),
+    );
   });
 });

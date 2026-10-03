@@ -81,5 +81,31 @@ export const isParsedScheduleActive = (rules: ScheduleRule[], now = new Date()) 
   return isBlocked && !isAllowed;
 };
 
+const MINUTES_PER_DAY = 24 * 60;
+
+export const getNextScheduleBoundary = (schedules: ScheduleRule[][], now = new Date()) => {
+  const boundaries = new Set<number>();
+  for (const { start, end } of schedules.flat()) {
+    if (start !== undefined) boundaries.add(start);
+    if (end !== undefined) boundaries.add(end);
+  }
+
+  if (!boundaries.size) {
+    return undefined;
+  }
+
+  const currentTime = now.getHours() * 60 + now.getMinutes();
+  const minutesUntilNext = Math.min(
+    ...[...boundaries].map(
+      (boundary) => (boundary - currentTime + MINUTES_PER_DAY) % MINUTES_PER_DAY || MINUTES_PER_DAY,
+    ),
+  );
+
+  const next = new Date(now);
+  next.setSeconds(0, 0);
+  next.setMinutes(next.getMinutes() + minutesUntilNext);
+  return next.getTime();
+};
+
 export default (source: string, now = new Date()) =>
   isParsedScheduleActive(parseSchedule(source), now);
