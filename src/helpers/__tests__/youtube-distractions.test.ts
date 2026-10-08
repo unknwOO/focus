@@ -1,5 +1,6 @@
 import {
   areYouTubeDistractionsHidden,
+  getYouTubeRedirectPath,
   normalizeYouTubeDistractionsPausedUntil,
   pauseYouTubeDistractions,
   YOUTUBE_DISTRACTIONS_PAUSE_DURATION,
@@ -26,5 +27,15 @@ describe("YouTube distractions visibility", () => {
     [undefined, null, "later", -1, Number.NaN, Number.POSITIVE_INFINITY].forEach((value) => {
       expect(normalizeYouTubeDistractionsPausedUntil(value)).toBe(0);
     });
+  });
+
+  it("redirects the home page to subscriptions when distractions are hidden", () => {
+    expect(getYouTubeRedirectPath("/", true)).toBe("/feed/subscriptions");
+  });
+
+  it("does not redirect while a pause is active or on other pages", () => {
+    expect(getYouTubeRedirectPath("/", false)).toBeUndefined();
+    expect(getYouTubeRedirectPath("/watch", true)).toBeUndefined();
+    expect(getYouTubeRedirectPath("/feed/subscriptions", true)).toBeUndefined();
   });
 });

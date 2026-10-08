@@ -1,5 +1,6 @@
 import {
   areYouTubeDistractionsHidden,
+  getYouTubeRedirectPath,
   normalizeYouTubeDistractionsPausedUntil,
 } from "./helpers/youtube-distractions";
 import storage from "./storage";
@@ -15,6 +16,15 @@ const refreshYouTubeLayout = () => {
   }, 0);
 };
 
+const redirectFromHome = () => {
+  const hidden = document.documentElement.classList.contains(HIDDEN_CLASS);
+  const redirectPath = getYouTubeRedirectPath(window.location.pathname, hidden);
+
+  if (redirectPath) {
+    window.location.replace(redirectPath);
+  }
+};
+
 const render = (storedPausedUntil: unknown) => {
   window.clearTimeout(resumeTimer);
   const pausedUntil = normalizeYouTubeDistractionsPausedUntil(storedPausedUntil);
@@ -26,6 +36,8 @@ const render = (storedPausedUntil: unknown) => {
     refreshYouTubeLayout();
   }
 
+  redirectFromHome();
+
   if (!hidden) {
     resumeTimer = window.setTimeout(() => render(pausedUntil), pausedUntil - Date.now());
   }
@@ -36,6 +48,8 @@ document.documentElement.classList.add(HIDDEN_CLASS);
 void storage.get(["youtubeDistractionsPausedUntil"]).then(({ youtubeDistractionsPausedUntil }) => {
   render(youtubeDistractionsPausedUntil);
 });
+
+document.addEventListener("yt-navigate-finish", redirectFromHome);
 
 chrome.storage.local.onChanged.addListener((changes) => {
   if (changes.youtubeDistractionsPausedUntil) {
