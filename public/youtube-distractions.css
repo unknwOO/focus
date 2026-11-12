@@ -63,3 +63,79 @@ html.focus-hide-youtube-distractions ytd-watch-flexy[is-two-columns_]:not([theat
 html.focus-hide-youtube-distractions ytd-guide-section-renderer:has(a[href*="/feed/history"]) {
   border-bottom: 0 !important;
 }
+
+/* Watched videos: a video counts as watched once its progress bar reaches 90%.
+   Detection is CSS-only so it applies on first paint, without waiting for JS.
+   Only the outermost item is styled (YouTube nests lockups inside grid items),
+   and the History page is left untouched since it only lists watched videos. */
+html[data-focus-watched-videos="HIDE"]
+:is(
+  ytd-rich-item-renderer,
+  ytd-video-renderer,
+  ytd-grid-video-renderer,
+  ytd-compact-video-renderer,
+  ytd-playlist-video-renderer,
+  yt-lockup-view-model
+):not(
+  :is(
+      ytd-rich-item-renderer,
+      ytd-video-renderer,
+      ytd-grid-video-renderer,
+      ytd-compact-video-renderer,
+      ytd-playlist-video-renderer,
+      yt-lockup-view-model
+    )
+    *,
+  ytd-browse[page-subtype="history"] *
+):has(
+  :is(
+      ytd-thumbnail-overlay-resume-playback-renderer #progress,
+      [class*="WatchedProgressBarSegment"],
+      [class*="ProgressBar"] [style*="width"],
+      [class*="progress-bar"] [style*="width"]
+    ):is(
+      [style*="width: 100%"],
+      [style*="width:100%"],
+      [style*="width: 9"]:not([style*="width: 9%"], [style*="width: 9."]),
+      [style*="width:9"]:not([style*="width:9%"], [style*="width:9."])
+    )
+) {
+  display: none !important;
+}
+
+html[data-focus-watched-videos="DIM"]
+  :is(
+    ytd-rich-item-renderer,
+    ytd-video-renderer,
+    ytd-grid-video-renderer,
+    ytd-compact-video-renderer,
+    ytd-playlist-video-renderer,
+    yt-lockup-view-model
+  ):not(
+    :is(
+        ytd-rich-item-renderer,
+        ytd-video-renderer,
+        ytd-grid-video-renderer,
+        ytd-compact-video-renderer,
+        ytd-playlist-video-renderer,
+        yt-lockup-view-model
+      )
+      *,
+    ytd-browse[page-subtype="history"] *
+  ):has(
+    :is(
+        ytd-thumbnail-overlay-resume-playback-renderer #progress,
+        [class*="WatchedProgressBarSegment"],
+        [class*="ProgressBar"] [style*="width"],
+        [class*="progress-bar"] [style*="width"]
+      ):is(
+        [style*="width: 100%"],
+        [style*="width:100%"],
+        [style*="width: 9"]:not([style*="width: 9%"], [style*="width: 9."]),
+        [style*="width:9"]:not([style*="width:9%"], [style*="width:9."])
+      )
+  ) {
+  opacity: 0.25;
+  filter: grayscale(1);
+  pointer-events: none;
+}

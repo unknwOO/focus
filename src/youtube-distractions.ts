@@ -3,6 +3,7 @@ import {
   getYouTubeRedirectPath,
   normalizeYouTubeDistractionsPausedUntil,
 } from "./helpers/youtube-distractions";
+import { normalizeYouTubeWatchedVideosMode } from "./helpers/youtube-watched-videos";
 import storage from "./storage";
 
 const HIDDEN_CLASS = "focus-hide-youtube-distractions";
@@ -43,16 +44,33 @@ const render = (storedPausedUntil: unknown) => {
   }
 };
 
+const renderWatchedVideos = (storedMode: unknown) => {
+  const mode = normalizeYouTubeWatchedVideosMode(storedMode);
+  const changed = document.documentElement.dataset.focusWatchedVideos !== mode;
+  document.documentElement.dataset.focusWatchedVideos = mode;
+
+  if (changed) {
+    refreshYouTubeLayout();
+  }
+};
+
 document.documentElement.classList.add(HIDDEN_CLASS);
 
-void storage.get(["youtubeDistractionsPausedUntil"]).then(({ youtubeDistractionsPausedUntil }) => {
-  render(youtubeDistractionsPausedUntil);
-});
+void storage
+  .get(["youtubeDistractionsPausedUntil", "youtubeWatchedVideos"])
+  .then(({ youtubeDistractionsPausedUntil, youtubeWatchedVideos }) => {
+    render(youtubeDistractionsPausedUntil);
+    renderWatchedVideos(youtubeWatchedVideos);
+  });
 
 document.addEventListener("yt-navigate-finish", redirectFromHome);
 
 chrome.storage.local.onChanged.addListener((changes) => {
   if (changes.youtubeDistractionsPausedUntil) {
     render(changes.youtubeDistractionsPausedUntil.newValue);
+  }
+
+  if (changes.youtubeWatchedVideos) {
+    renderWatchedVideos(changes.youtubeWatchedVideos.newValue);
   }
 });

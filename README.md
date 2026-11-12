@@ -12,6 +12,8 @@ Click the icon, then select **Open Settings** to configure sites to block. See [
 
 The toolbar popup hides the YouTube Home feed, related video suggestions, end-screen suggestions, and Shorts. While they are hidden, the YouTube home page redirects to your subscriptions feed. Turn the toggle off to reveal them for 15 minutes. Focus hides them again automatically when the pause expires.
 
+**Watched Videos** sets how videos you have watched to at least 90% appear in YouTube feeds: **Show**, **Dim** (faded and not clickable), or **Hide**.
+
 Choose how to resolve blocked: **Close Tab**, or **Show Blocked info page**.
 
 **Blocked info page** shows what _url_ was blocked, based on which _rule_ it was blocked, and optionally a blocked count over a chosen period of time:
