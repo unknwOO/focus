@@ -3,6 +3,10 @@ import {
   getYouTubeRedirectPath,
   normalizeYouTubeDistractionsPausedUntil,
 } from "./helpers/youtube-distractions";
+import {
+  normalizeYouTubeWatchedVideosMode,
+  YOUTUBE_WATCHED_VIDEOS_CACHE_KEY,
+} from "./helpers/youtube-watched-videos";
 import storage from "./storage";
 
 const HIDDEN_CLASS = "focus-hide-youtube-distractions";
@@ -43,16 +47,51 @@ const render = (storedPausedUntil: unknown) => {
   }
 };
 
-document.documentElement.classList.add(HIDDEN_CLASS);
+const renderWatchedVideos = (storedMode: unknown) => {
+  const mode = normalizeYouTubeWatchedVideosMode(storedMode);
+  const changed = document.documentElement.dataset.focusWatchedVideos !== mode;
+  document.documentElement.dataset.focusWatchedVideos = mode;
 
-void storage.get(["youtubeDistractionsPausedUntil"]).then(({ youtubeDistractionsPausedUntil }) => {
-  render(youtubeDistractionsPausedUntil);
-});
+  try {
+    localStorage.setItem(YOUTUBE_WATCHED_VIDEOS_CACHE_KEY, mode);
+  } catch {
+    // The cache only prevents a flash on reload; storage stays the source of truth.
+  }
+
+  if (changed) {
+    refreshYouTubeLayout();
+  }
+};
+
+const readCachedWatchedVideosMode = () => {
+  try {
+    return localStorage.getItem(YOUTUBE_WATCHED_VIDEOS_CACHE_KEY);
+  } catch {
+    return null;
+  }
+};
+
+document.documentElement.classList.add(HIDDEN_CLASS);
+// Read synchronously at document_start so watched videos never flash before the first paint.
+document.documentElement.dataset.focusWatchedVideos = normalizeYouTubeWatchedVideosMode(
+  readCachedWatchedVideosMode(),
+);
+
+void storage
+  .get(["youtubeDistractionsPausedUntil", "youtubeWatchedVideos"])
+  .then(({ youtubeDistractionsPausedUntil, youtubeWatchedVideos }) => {
+    render(youtubeDistractionsPausedUntil);
+    renderWatchedVideos(youtubeWatchedVideos);
+  });
 
 document.addEventListener("yt-navigate-finish", redirectFromHome);
 
 chrome.storage.local.onChanged.addListener((changes) => {
   if (changes.youtubeDistractionsPausedUntil) {
     render(changes.youtubeDistractionsPausedUntil.newValue);
+  }
+
+  if (changes.youtubeWatchedVideos) {
+    renderWatchedVideos(changes.youtubeWatchedVideos.newValue);
   }
 });

@@ -20,6 +20,7 @@ test("getRevisitedSchema() returns defaults for any invalid attribute", () => {
     schedule: DEFAULTS.schedule,
     passcode: DEFAULTS.passcode,
     youtubeDistractionsPausedUntil: DEFAULTS.youtubeDistractionsPausedUntil,
+    youtubeWatchedVideos: DEFAULTS.youtubeWatchedVideos,
   } as Partial<Schema>);
 
   expect(

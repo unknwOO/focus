@@ -1,4 +1,8 @@
 import { createEmptyPasscode, type PasscodeState } from "../helpers/passcode";
+import {
+  isYouTubeWatchedVideosMode,
+  type YouTubeWatchedVideosMode,
+} from "../helpers/youtube-watched-videos";
 
 export const RESOLUTIONS = ["CLOSE_TAB", "SHOW_BLOCKED_INFO_PAGE"] as const;
 
@@ -18,6 +22,7 @@ export interface Schema {
   schedule: string;
   passcode: PasscodeState;
   youtubeDistractionsPausedUntil: number;
+  youtubeWatchedVideos: YouTubeWatchedVideosMode;
 }
 
 export const DEFAULTS: Readonly<Schema> = {
@@ -31,6 +36,7 @@ export const DEFAULTS: Readonly<Schema> = {
   schedule: "",
   passcode: createEmptyPasscode(),
   youtubeDistractionsPausedUntil: 0,
+  youtubeWatchedVideos: "SHOW",
 };
 
 export const VALIDATORS: Readonly<Record<keyof Schema, (value: unknown) => boolean>> = {
@@ -44,6 +50,7 @@ export const VALIDATORS: Readonly<Record<keyof Schema, (value: unknown) => boole
   schedule: (value) => typeof value === "string",
   youtubeDistractionsPausedUntil: (value) =>
     typeof value === "number" && Number.isFinite(value) && value >= 0,
+  youtubeWatchedVideos: isYouTubeWatchedVideosMode,
   passcode: (value) => {
     if (!value || typeof value !== "object") return false;
     const passcode = value as PasscodeState;

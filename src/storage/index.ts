@@ -19,6 +19,7 @@ const getAll = () =>
     "schedule",
     "passcode",
     "youtubeDistractionsPausedUntil",
+    "youtubeWatchedVideos",
   ]);
 
 export default {
