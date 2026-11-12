@@ -2,8 +2,6 @@ export const YOUTUBE_WATCHED_VIDEOS_MODES = ["SHOW", "DIM", "HIDE"] as const;
 
 export type YouTubeWatchedVideosMode = (typeof YOUTUBE_WATCHED_VIDEOS_MODES)[number];
 
-export const YOUTUBE_WATCHED_VIDEOS_CACHE_KEY = "focus-youtube-watched-videos";
-
 export const YOUTUBE_WATCHED_VIDEOS_CAPTIONS: Readonly<Record<YouTubeWatchedVideosMode, string>> = {
   SHOW: "Watched videos look like any other video.",
   DIM: "Watched videos fade out.",

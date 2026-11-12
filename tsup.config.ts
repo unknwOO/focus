@@ -36,6 +36,8 @@ export default defineConfig({
         "popup.html",
         "switch.css",
         "youtube-distractions.css",
+        "youtube-watched-videos-dim.js",
+        "youtube-watched-videos-hide.js",
         `manifest-${TARGET}.json`,
       ];
 

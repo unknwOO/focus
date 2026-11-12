@@ -13,6 +13,8 @@ import {
 } from "./helpers/protected-settings";
 import recreateContextMenu from "./helpers/recreate-context-menu";
 import type { SettingsMessage, SettingsMessageResponse } from "./helpers/settings-messages";
+import { normalizeYouTubeWatchedVideosMode } from "./helpers/youtube-watched-videos";
+import { syncWatchedVideosScript } from "./helpers/youtube-watched-videos-script";
 import storage, { VALIDATORS } from "./storage";
 import initStorage from "./storage/init";
 
@@ -76,6 +78,16 @@ const syncProtectedSettings = (refreshContextMenu = false) => {
   }
 };
 
+const syncWatchedVideos = (storedMode: unknown) =>
+  syncWatchedVideosScript(
+    chrome.scripting,
+    normalizeYouTubeWatchedVideosMode(storedMode),
+    process.env.TARGET === "chrome",
+  ).catch((error) => {
+    // Without the early script, the content script still applies the mode once storage loads.
+    console.warn("Could not register the watched videos script", error);
+  });
+
 const controllerReady = initStorage()
   .then(() => storage.get(["enabled", "contextMenu", "blocked", "schedule", "passcode"]))
   .then((settings) => {
@@ -86,8 +98,15 @@ const controllerReady = initStorage()
       verifyPasscode,
     );
     syncProtectedSettings(true);
+    void storage
+      .get(["youtubeWatchedVideos"])
+      .then(({ youtubeWatchedVideos }) => syncWatchedVideos(youtubeWatchedVideos));
 
     chrome.storage.local.onChanged.addListener((changes) => {
+      if (changes.youtubeWatchedVideos) {
+        void syncWatchedVideos(changes.youtubeWatchedVideos.newValue);
+      }
+
       const protectedChange = [...PROTECTED_SETTING_KEYS, "passcode"].some(
         (key) => changes[key] !== undefined,
       );

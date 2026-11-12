@@ -18,7 +18,8 @@
     "page": "options.html",
     "open_in_tab": true
   },
-  "permissions": ["storage", "tabs", "webNavigation", "contextMenus", "alarms"],
+  "permissions": ["storage", "tabs", "webNavigation", "contextMenus", "alarms", "scripting"],
+  "host_permissions": ["https://youtube.com/*", "https://www.youtube.com/*"],
   "background": {
     "scripts": ["background.mjs"],
     "type": "module"

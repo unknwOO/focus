@@ -15,7 +15,8 @@
     }
   },
   "options_page": "options.html",
-  "permissions": ["storage", "tabs", "webNavigation", "contextMenus", "alarms"],
+  "permissions": ["storage", "tabs", "webNavigation", "contextMenus", "alarms", "scripting"],
+  "host_permissions": ["https://youtube.com/*", "https://www.youtube.com/*"],
   "background": {
     "service_worker": "background.mjs",
     "type": "module"

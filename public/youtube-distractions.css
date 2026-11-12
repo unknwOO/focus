@@ -65,7 +65,9 @@ html.focus-hide-youtube-distractions ytd-guide-section-renderer:has(a[href*="/fe
 }
 
 /* Watched videos: a video counts as watched once its progress bar reaches 90%.
-   Detection is CSS-only so it applies on first paint, without waiting for JS. */
+   Detection is CSS-only so it applies on first paint, without waiting for JS.
+   Only the outermost item is styled (YouTube nests lockups inside grid items),
+   and the History page is left untouched since it only lists watched videos. */
 html[data-focus-watched-videos="HIDE"]
 :is(
   ytd-rich-item-renderer,
@@ -74,6 +76,17 @@ html[data-focus-watched-videos="HIDE"]
   ytd-compact-video-renderer,
   ytd-playlist-video-renderer,
   yt-lockup-view-model
+):not(
+  :is(
+      ytd-rich-item-renderer,
+      ytd-video-renderer,
+      ytd-grid-video-renderer,
+      ytd-compact-video-renderer,
+      ytd-playlist-video-renderer,
+      yt-lockup-view-model
+    )
+    *,
+  ytd-browse[page-subtype="history"] *
 ):has(
   :is(
       ytd-thumbnail-overlay-resume-playback-renderer #progress,
@@ -98,6 +111,17 @@ html[data-focus-watched-videos="DIM"]
     ytd-compact-video-renderer,
     ytd-playlist-video-renderer,
     yt-lockup-view-model
+  ):not(
+    :is(
+        ytd-rich-item-renderer,
+        ytd-video-renderer,
+        ytd-grid-video-renderer,
+        ytd-compact-video-renderer,
+        ytd-playlist-video-renderer,
+        yt-lockup-view-model
+      )
+      *,
+    ytd-browse[page-subtype="history"] *
   ):has(
     :is(
         ytd-thumbnail-overlay-resume-playback-renderer #progress,
@@ -111,7 +135,7 @@ html[data-focus-watched-videos="DIM"]
         [style*="width:9"]:not([style*="width:9%"], [style*="width:9."])
       )
   ) {
-  opacity: 0.5;
-  filter: grayscale(0.8);
+  opacity: 0.25;
+  filter: grayscale(1);
   pointer-events: none;
 }
